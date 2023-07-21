@@ -10,11 +10,11 @@ Base = declarative_base()
 
 followers = Table('followers', Base.metadata ,
     Column('follower_id', Integer, ForeignKey('follower.id'),  primary_key=True),
-    Column('following_id',Integer, ForeignKey('user.id'),  primary_key=True)
+    Column('following_id',Integer, ForeignKey('users.id'),  primary_key=True)
 )
 
 class User(Base):
-    __tablename__ = 'user'
+    __tablename__ = 'users'
     # Here we define columns for the table person
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
@@ -22,10 +22,10 @@ class User(Base):
     firstname = Column(String(250), nullable=False)
     lastname = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False)
-    followers = relationship('Follower', secondary=followers , lazy='subquery', backref= backref('user', lazy=True))
+    followers = relationship('Follower', secondary=followers , lazy='subquery', backref= backref('users', lazy=True))
     # following = relationship('User', secondary='follower', back_populates='followers', lazy=True)
-    posts = relationship('Post', backref='user', lazy=True)
-    user_comments = relationship('Comment', backref='user', lazy=True)
+    posts = relationship('Post', backref='users', lazy=True)
+    user_comments = relationship('Comment', backref='users', lazy=True)
 
     def to_dict(self):
         return {}
@@ -45,7 +45,7 @@ class Comment(Base):
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
     comment_text = Column(String(250))
-    author_id = Column(Integer, ForeignKey('user.id'))
+    author_id = Column(Integer, ForeignKey('users.id'))
     post_id = Column(Integer, ForeignKey('post.id'))
     
     def to_dict(self):
@@ -56,7 +56,7 @@ class Post(Base):
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey('users.id'))
     post_comments = relationship('Comment', backref='post', lazy=True)
     medias = relationship('Media', backref='post', lazy=True)
     
